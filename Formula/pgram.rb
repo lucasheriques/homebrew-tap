@@ -31,6 +31,6 @@ class Pgram < Formula
   end
 
   test do
-    assert_match version.to_s, shell_output("#{bin}/pgram --version")
+    assert_match version.to_s, shell_output("#{bin}/pgram version")
   end
 end

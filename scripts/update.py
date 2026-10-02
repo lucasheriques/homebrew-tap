@@ -34,7 +34,7 @@ def formula(release, checksums):
             lines += [f"    on_{cpu} do", f'      url "{url}"', f'      sha256 "{digest}"', "    end"]
         lines += ["  end"]
     lines += ["", "  def install", '    bin.install "pgram"', "  end", "",
-              "  test do", '    assert_match version.to_s, shell_output("#{bin}/pgram --version")', "  end", "end", ""]
+              "  test do", '    assert_match version.to_s, shell_output("#{bin}/pgram version")', "  end", "end", ""]
     return "\n".join(lines)
 
 

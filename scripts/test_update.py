@@ -16,6 +16,7 @@ class FormulaTest(unittest.TestCase):
     def test_maps_all_platforms_to_verified_checksums(self):
         result = formula(self.release, self.checksums)
         self.assertEqual(result.count("sha256"), 4)
+        self.assertIn('#{bin}/pgram version', result)
         for asset in self.assets:
             self.assertIn(asset["browser_download_url"], result)
 
