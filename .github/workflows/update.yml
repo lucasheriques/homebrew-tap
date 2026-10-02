@@ -1,0 +1,40 @@
+name: update
+
+on:
+  schedule:
+    - cron: "43 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-formula
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Generate formula from published checksums
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/update.py
+      - name: Test release validation
+        run: python -m unittest discover -s scripts -v
+      - name: Check Ruby syntax
+        run: ruby -c Formula/pgram.rb
+      - name: Publish changed formula
+        run: |
+          if git diff --quiet -- Formula/pgram.rb; then
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Formula/pgram.rb
+          git commit -m 'Update pgram to latest release'
+          git push
